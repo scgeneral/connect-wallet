@@ -8,6 +8,8 @@ import { WalletsConnect } from './wallet-connect';
 import { CoinbaseWalletConnect } from './coinbase-wallet';
 import { KardiaChainConnect } from './kardiachain';
 import { OntoConnect } from './onto';
+import { GameStopConnect } from './gamestop';
+
 
 import {
   INetwork,
@@ -41,6 +43,7 @@ export class ConnectWallet {
     'CoinbaseWallet',
     'KardiaChain',
     'Onto',
+    'GameStop',
   ];
 
   private network: INetwork;
@@ -98,10 +101,9 @@ export class ConnectWallet {
     }
 
     this.network = network;
-    this.settings = settings ? settings : { providerType: false };
-
+    this.settings = settings || { providerType: false };
     this.connector = this.chooseProvider(provider.name);
-
+    
     return new Promise<IConnectorMessage>((resolve, reject) => {
       this.connector
       .connect(provider)
@@ -133,6 +135,8 @@ export class ConnectWallet {
         return new KardiaChainConnect();
       case 'Onto':
         return new OntoConnect(this.network);
+      case 'GameStop': 
+        return new GameStopConnect(this.network);
     }
   }
 
@@ -204,7 +208,7 @@ export class ConnectWallet {
         text: '',
       },
     };
-
+    
     return new Promise((resolve, reject) => {
       if (this.currentWeb3() && !this.connector) {
         const { address, accounts } = this.currentWeb3().currentProvider as any;
@@ -212,7 +216,7 @@ export class ConnectWallet {
       } else if (this.connector) {
         const { chainID } = this.network;
         const { chainsMap, chainIDMap } = parameters;
-
+        
         this.connector.getAccounts().then(
           (connectInfo: IConnect) => {
             if (connectInfo.network && connectInfo.network.chainID !== chainID) {
