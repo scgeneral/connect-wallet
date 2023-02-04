@@ -16,13 +16,10 @@ This package provides the ability to connect Wallets to website or application v
 
 #### 1. Install package.
 
-NPM: `npm install @amfi/connect-wallet`
-Yarn: `yarn add @amfi/connect-wallet`
-
 #### 2. Import and initialize ConnectWallet in project.
 
 ```typescrpt
-import { ConnectWallet } from '@amfi/connect-wallet';
+import { ConnectWallet } from 'connect-wallet';
 const connectWallet = new ConnectWallet();
 ```
 

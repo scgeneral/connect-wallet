@@ -47,6 +47,7 @@ var wallet_connect_1 = require("./wallet-connect");
 var coinbase_wallet_1 = require("./coinbase-wallet");
 var kardiachain_1 = require("./kardiachain");
 var onto_1 = require("./onto");
+var gamestop_1 = require("./gamestop");
 var helpers_1 = require("./helpers");
 var ConnectWallet = /** @class */ (function () {
     /**
@@ -61,6 +62,7 @@ var ConnectWallet = /** @class */ (function () {
             'CoinbaseWallet',
             'KardiaChain',
             'Onto',
+            'GameStop',
         ];
         this.contracts = {};
         this.allTxSubscribers = [];
@@ -145,7 +147,7 @@ var ConnectWallet = /** @class */ (function () {
                         }];
                 }
                 this.network = network;
-                this.settings = settings ? settings : { providerType: false };
+                this.settings = settings || { providerType: false };
                 this.connector = this.chooseProvider(provider.name);
                 return [2 /*return*/, new Promise(function (resolve, reject) {
                         _this.connector
@@ -179,6 +181,8 @@ var ConnectWallet = /** @class */ (function () {
                 return new kardiachain_1.KardiaChainConnect();
             case 'Onto':
                 return new onto_1.OntoConnect(this.network);
+            case 'GameStop':
+                return new gamestop_1.GameStopConnect(this.network);
         }
     };
     /**

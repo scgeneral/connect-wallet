@@ -1,9 +1,14 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable prefer-promise-reject-errors */
 import { AbstractConnector } from "abstract-connector";
-import { codeMap, parameters } from "../helpers";
 import { IConnectorMessage, IEvent, IEventError, INativeCurrency, INetwork } from "interface";
 import { Observable } from "rxjs";
+
+import { codeMap, parameters } from "../helpers";
+
+interface IWindow extends Window {
+  gamestop: any
+}
 
 export class GameStopConnect implements AbstractConnector {
   public connector: any;
@@ -41,8 +46,9 @@ export class GameStopConnect implements AbstractConnector {
    */
   public connect(): Promise<IConnectorMessage> {
     return new Promise<any>((resolve, reject) => {
-      if (typeof window.gamestop !== "undefined") {
-        this.connector = window.gamestop;
+      const { gamestop } = window as unknown as IWindow;
+      if (typeof gamestop !== "undefined") {
+        this.connector = gamestop;
         resolve({
           code: 1,
           connected: true,
@@ -180,7 +186,7 @@ export class GameStopConnect implements AbstractConnector {
     };
 
     return new Promise((resolve, reject) => {
-      if (!window.gamestop) {
+      if (!(window as unknown as IWindow).gamestop) {
         reject({
           code: 4,
           message: {
