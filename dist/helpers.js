@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.addChains = exports.getCode = exports.codeMap = exports.parameters = void 0;
 exports.parameters = {
     chainIDMap: {
@@ -25,135 +25,136 @@ exports.parameters = {
         250: '0xfa',
         4002: '0xfa2',
         2001: '0x7d1',
-        200101: '0x30da5'
+        200101: '0x30da5',
     },
     chainsMap: {
         '0x1': {
             name: 'mainnet',
-            chainID: 1
+            chainID: 1,
         },
         '0x3': {
             name: 'ropsten',
-            chainID: 3
+            chainID: 3,
         },
         '0x4': {
             name: 'rinkeby',
-            chainID: 4
+            chainID: 4,
         },
         '0x5': {
             name: 'goerli',
-            chainID: 5
+            chainID: 5,
         },
         '0x2a': {
             name: 'kovan',
-            chainID: 42
+            chainID: 42,
         },
         '0x80': {
             name: 'heco',
-            chainID: 128
+            chainID: 128,
         },
         '0x100': {
             name: 'heco-testnet',
-            chainID: 256
+            chainID: 256,
         },
         69: {
             name: 'KardiachainTestnet',
-            chainID: 69
+            chainID: 69,
         },
         24: {
             name: 'Kardiachain',
-            chainID: 24
+            chainID: 24,
         },
         '0x19': {
             name: 'cronos-mainnet',
-            chainID: 25
+            chainID: 25,
         },
         '0x38': {
             name: 'binance',
-            chainID: 56
+            chainID: 56,
         },
         '0x61': {
             name: 'binance-testnet',
-            chainID: 97
+            chainID: 97,
         },
         '0x89': {
             name: 'polygon',
-            chainID: 137
+            chainID: 137,
         },
         '0x152': {
             name: 'cronos-testnet',
-            chainID: 338
+            chainID: 338,
         },
         '0x13881': {
             name: 'polygon-testnet',
-            chainID: 80001
+            chainID: 80001,
         },
         '0xa86a': {
             name: 'avalanche',
-            chainID: 43114
+            chainID: 43114,
         },
         '0xa869': {
             name: 'avalanche-testnet',
-            chainID: 43113
+            chainID: 43113,
         },
         '0xa4ec': {
             name: 'celo',
-            chainID: 42220
+            chainID: 42220,
         },
         '0xaef3': {
             name: 'celo-testnet',
-            chainID: 44787
+            chainID: 44787,
         },
         '0xfa': {
             name: 'fantom-opera',
-            chainID: 250
+            chainID: 250,
         },
         '0xfa2': {
             name: 'fantom-testnet',
-            chainID: 4002
+            chainID: 4002,
         },
         '0x7d1': {
             name: 'Milkomeda C1 Mainnet',
-            chainID: 2001
+            chainID: 2001,
         },
         '0x30da5': {
             name: 'Milkomeda C1 Testnet',
-            chainID: 200101
-        }
-    }
+            chainID: 200101,
+        },
+    },
 };
 exports.codeMap = {
     1: {
         type: 'Success',
-        name: 'Provider connected'
+        name: 'Provider connected',
     },
     2: {
         type: 'Error',
-        name: 'Provider not found'
+        name: 'Provider not found',
     },
     3: {
         type: 'Error',
-        name: 'Not authorized'
+        name: 'Not authorized',
     },
     4: {
         type: 'Error',
-        name: 'Chain not selected or not equal to settings chain'
+        name: 'Chain not selected or not equal to settings chain',
     },
     5: {
         type: 'Error',
-        name: 'Qr code modal are closed'
+        name: 'Qr code modal are closed',
     },
     6: {
         type: 'Error',
-        name: 'Wallet disconnected'
+        name: 'Wallet disconnected',
     },
     7: {
         type: 'Error',
-        name: 'Cant getting user address'
-    }
+        name: 'Cant getting user address',
+    },
 };
-exports.getCode = function (code) { return exports.codeMap[code]; };
-exports.addChains = function (chains) {
+var getCode = function (code) { return exports.codeMap[code]; };
+exports.getCode = getCode;
+var addChains = function (chains) {
     chains.map(function (chain) {
         var name = chain.name, chainID = chain.chainID, hex = chain.hex;
         exports.parameters.chainIDMap[chainID] = hex;
@@ -161,3 +162,4 @@ exports.addChains = function (chains) {
     });
     return exports.parameters;
 };
+exports.addChains = addChains;

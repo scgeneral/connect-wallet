@@ -17,14 +17,22 @@ export interface IProvider {
             };
             chainId?: number;
         };
+        wc?: {
+            projectId: string;
+            chainId: number[];
+            rpcMap?: {
+                [chainId: string]: string;
+            };
+            showQrModal: boolean;
+        };
     };
 }
-export declare type ContractWeb3 = Contract;
+export type ContractWeb3 = Contract;
 export interface IEvent {
     name: string;
     address: string;
     network: {
-        name: string;
+        name?: string;
         chainId: number;
     };
 }

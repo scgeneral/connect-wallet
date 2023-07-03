@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import WalletConnectProvider from '@walletconnect/web3-provider';
+import WalletConnectProvider from '@walletconnect/ethereum-provider';
 
 import {
   IConnectorMessage,
@@ -9,13 +9,15 @@ import {
 } from '../interface';
 import { parameters } from '../helpers';
 import { AbstractConnector } from '../abstract-connector';
+import EthereumProvider from '@walletconnect/ethereum-provider';
+import {ProviderAccounts, ProviderInfo} from '@walletconnect/ethereum-provider/dist/types/types';
 
 export class WalletsConnect extends AbstractConnector {
   public connector: WalletConnectProvider;
 
   /**
    * Connect wallet to application using connect wallet via WalletConnect by scanning Qr Code
-   * in your favourite cryptowallet.
+   * in your favourite crypto wallet.
    */
   constructor() {
     super();
@@ -29,12 +31,10 @@ export class WalletsConnect extends AbstractConnector {
    */
   public async connect(provider: IProvider): Promise<IConnectorMessage> {
     return new Promise<any>(async (resolve, reject) => {
-      this.connector = new WalletConnectProvider(
-        provider.provider[provider.useProvider],
-      );
-      await this.connector
-        .enable()
-        .then(() => {
+      const providerOptions = provider.provider[provider.useProvider];
+      if (providerOptions) {
+        this.connector = await EthereumProvider.init(providerOptions);
+        await this.connector.connect().then(() => {
           resolve({
             code: 1,
             connected: true,
@@ -45,8 +45,7 @@ export class WalletsConnect extends AbstractConnector {
               text: `Wallet Connect connected.`,
             },
           });
-        })
-        .catch(() => {
+        }).catch((error) => {
           reject({
             code: 5,
             connected: false,
@@ -56,32 +55,34 @@ export class WalletsConnect extends AbstractConnector {
               text: `User closed qr modal window.`,
             },
           });
+        })
+      } else {
+        reject({
+          code: 6,
+          connected: false,
+          message: {
+            title: 'Error',
+            subtitle: 'Error connect',
+            text: 'Project Id is required',
+          },
         });
+      }
     });
   }
 
   public eventSubscriber(): Observable<IEvent | IEventError> {
     return new Observable((observer) => {
-      this.connector.on('connect', (error: any, payload: any) => {
-        if (error) {
-          observer.error({
-            code: 3,
-            message: {
-              title: 'Error',
-              subtitle: 'Authorized error',
-              message: 'You are not authorized.',
-            },
-          });
+      this.connector.on('connect', (result: ProviderInfo) => {
+        console.log('connect', result);
+        const address = this.connector.accounts[0];
+        const network = {
+          chainId: parseInt(result.chainId),
         }
-
-        const { accounts, chainId } = payload.params[0];
-
-        observer.next({ address: accounts, network: chainId, name: 'connect' });
+        observer.next({ address, network, name: 'connect' });
       });
 
-      this.connector.on('disconnect', (error, payload) => {
+      this.connector.on('disconnect', (error) => {
         if (error) {
-          console.log('wallet connect on connect error', error, payload);
           observer.error({
             code: 6,
             message: {
@@ -95,9 +96,7 @@ export class WalletsConnect extends AbstractConnector {
 
       this.connector.on(
         'accountsChanged',
-        (accounts: string[], payload: any) => {
-          console.log('WalletConnect account changed', accounts, payload);
-
+        (accounts: ProviderAccounts) => {
           observer.next({
             address: accounts[0],
             network:
@@ -109,29 +108,9 @@ export class WalletsConnect extends AbstractConnector {
         },
       );
 
-      this.connector.on('chainChanged', (chainId: number) => {
+      this.connector.on('chainChanged', (chainId) => {
         console.log('WalletConnect chain changed:', chainId);
       });
-
-      // this.connector.on('wc_sessionUpdate', (error, payload) => {
-      //   console.log(error || payload, 'wc_sessionUpdate');
-      // });
-
-      // this.connector.on('wc_sessionRequest', (error, payload) => {
-      //   console.log(error || payload, 'wc_sessionRequest');
-      // });
-
-      // this.connector.on('call_request', (error, payload) => {
-      //   console.log(error || payload, 'call_request');
-      // });
-
-      // this.connector.on('session_update', (error, payload) => {
-      //   console.log(error || payload, 'session_update');
-      // });
-
-      // this.connector.on('session_request', (error, payload) => {
-      //   console.log(error || payload, 'session_request');
-      // });
     });
   }
 
@@ -143,10 +122,6 @@ export class WalletsConnect extends AbstractConnector {
    */
   public getAccounts(): Promise<any> {
     return new Promise((resolve) => {
-      if (!this.connector.connected) {
-        this.connector.createSessithis.connector.on();
-      }
-
       resolve({
         address: this.connector.accounts[0],
         network:

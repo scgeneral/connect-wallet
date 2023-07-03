@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConnectWallet = void 0;
 var web3_1 = __importDefault(require("web3"));
 var rxjs_1 = require("rxjs");
@@ -72,7 +72,7 @@ var ConnectWallet = /** @class */ (function () {
          * @returns return chains list parameters
          * @example this.addChains([chain,chain]).then((parameters: any) => console.log(parameters),(err) => console.log(err));
          */
-        this.addChains = function (chains) { return helpers_1.addChains(chains); };
+        this.addChains = function (chains) { return (0, helpers_1.addChains)(chains); };
         /**
          * Get contract by providing contract name. If you don't have contracts use addContract function to initialize it.
          *
@@ -116,7 +116,7 @@ var ConnectWallet = /** @class */ (function () {
             return _this.Web3.eth.personal.sign(msg, userAddr, '');
         };
         if (initProvider) {
-            this.Web3 = new web3_1["default"](initProvider);
+            this.Web3 = new web3_1.default(initProvider);
         }
     }
     /**
@@ -142,8 +142,8 @@ var ConnectWallet = /** @class */ (function () {
                             message: {
                                 title: 'Error',
                                 subtitle: 'Provider Error',
-                                text: "Your provider doesn't exists"
-                            }
+                                text: "Your provider doesn't exists",
+                            },
                         }];
                 }
                 this.network = network;
@@ -196,7 +196,7 @@ var ConnectWallet = /** @class */ (function () {
             this.Web3.setProvider(provider);
         }
         else {
-            this.Web3 = new web3_1["default"](provider);
+            this.Web3 = new web3_1.default(provider);
         }
     };
     /**
@@ -241,8 +241,8 @@ var ConnectWallet = /** @class */ (function () {
             message: {
                 title: 'Error',
                 subtitle: 'Chain error',
-                text: ''
-            }
+                text: '',
+            },
         };
         return new Promise(function (resolve, reject) {
             if (_this.currentWeb3() && !_this.connector) {
@@ -254,7 +254,7 @@ var ConnectWallet = /** @class */ (function () {
                 var chainsMap_1 = helpers_1.parameters.chainsMap, chainIDMap_1 = helpers_1.parameters.chainIDMap;
                 _this.connector.getAccounts().then(function (connectInfo) {
                     if (connectInfo.network && connectInfo.network.chainID !== chainID_1) {
-                        error.message.text = "Please set network: " + chainsMap_1[chainIDMap_1[chainID_1]].name + ".";
+                        error.message.text = "Please set network: ".concat(chainsMap_1[chainIDMap_1[chainID_1]].name, ".");
                         reject(_this.applySettings(error));
                     }
                     else {

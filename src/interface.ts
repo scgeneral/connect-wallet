@@ -18,6 +18,14 @@ export interface IProvider {
       };
       chainId?: number;
     };
+    wc?: {
+      projectId: string;
+      chainId: number[];
+      rpcMap?: {
+        [chainId: string]: string;
+      }
+      showQrModal: boolean;
+    }
   };
 }
 
@@ -27,7 +35,7 @@ export interface IEvent {
   name: string;
   address: string;
   network: {
-    name: string;
+    name?: string;
     chainId: number;
   };
 }

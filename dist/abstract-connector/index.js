@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractConnector = void 0;
 var AbstractConnector = /** @class */ (function () {
     function AbstractConnector() {

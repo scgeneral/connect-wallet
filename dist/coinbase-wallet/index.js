@@ -7,6 +7,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -27,7 +29,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -51,7 +53,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.CoinbaseWalletConnect = void 0;
 var rxjs_1 = require("rxjs");
 var wallet_sdk_1 = __importDefault(require("@coinbase/wallet-sdk"));
@@ -86,10 +88,10 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
     CoinbaseWalletConnect.prototype.connect = function (provider) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            var coinbaseWallet = new wallet_sdk_1["default"]({
+            var coinbaseWallet = new wallet_sdk_1.default({
                 darkMode: false,
                 appName: 'RnB Connect Wallet',
-                overrideIsMetaMask: true
+                overrideIsMetaMask: true,
             });
             var chain = helpers_1.parameters.chainsMap[helpers_1.parameters.chainIDMap[_this.chainID]];
             if (!provider.useProvider) {
@@ -98,7 +100,7 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
             else {
                 var rpcProvider = provider.useProvider === 'rpc'
                     ? provider.provider.rpc.rpc[_this.chainID]
-                    : "https://" + chain.name + ".infura.io/v3/" + provider.provider.infura.infuraId;
+                    : "https://".concat(chain.name, ".infura.io/v3/").concat(provider.provider.infura.infuraId);
                 _this.connector = coinbaseWallet.makeWeb3Provider(rpcProvider, _this.chainID);
             }
             resolve({
@@ -108,8 +110,8 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
                 message: {
                     title: 'Success',
                     subtitle: 'CoinbaseWallet Connect',
-                    text: "CoinbaseWallet found and connected."
-                }
+                    text: "CoinbaseWallet found and connected.",
+                },
             });
         });
     };
@@ -124,7 +126,7 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
                     observer.next({
                         address: address[0],
                         network: helpers_1.parameters.chainsMap[helpers_1.parameters.chainIDMap[+_this.chainID]],
-                        name: 'accountsChanged'
+                        name: 'accountsChanged',
                     });
                 }
                 else {
@@ -133,8 +135,8 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
                         message: {
                             title: 'Error',
                             subtitle: 'Authorized error',
-                            text: 'You are not authorized.'
-                        }
+                            text: 'You are not authorized.',
+                        },
                     });
                 }
             });
@@ -159,7 +161,7 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
                         _a.trys.push([2, 4, , 9]);
                         return [4 /*yield*/, this.connector.request({
                                 method: 'wallet_switchEthereumChain',
-                                params: [{ chainId: "0x" + this.chainID.toString(16) }]
+                                params: [{ chainId: "0x".concat(this.chainID.toString(16)) }],
                             })];
                     case 3:
                         _a.sent();
@@ -177,13 +179,13 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
                                 method: 'wallet_addEthereumChain',
                                 params: [
                                     {
-                                        chainId: "0x" + this.chainID.toString(16),
+                                        chainId: "0x".concat(this.chainID.toString(16)),
                                         chainName: this.chainName,
                                         nativeCurrency: this.nativeCurrency,
                                         rpcUrls: [this.rpc],
-                                        blockExplorerUrls: [this.blockExplorerUrl]
+                                        blockExplorerUrls: [this.blockExplorerUrl],
                                     },
-                                ]
+                                ],
                             })];
                     case 6:
                         _a.sent();
@@ -214,8 +216,8 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
             message: {
                 title: 'Error',
                 subtitle: 'Authorized error',
-                message: 'You are not authorized.'
-            }
+                message: 'You are not authorized.',
+            },
         };
         return new Promise(function (resolve, reject) {
             _this.checkNet()
@@ -225,29 +227,31 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
                     if (accounts[0]) {
                         _this.connector
                             .request({
-                            method: 'eth_chainId'
+                            method: 'eth_chainId',
                         })
                             .then(function (chainID) {
                             resolve({
                                 address: accounts[0],
-                                network: helpers_1.parameters.chainsMap[helpers_1.parameters.chainIDMap[+chainID]]
+                                network: helpers_1.parameters.chainsMap[helpers_1.parameters.chainIDMap[+chainID]],
                             });
                         });
                     }
                     else {
                         reject(error);
                     }
-                })["catch"](function () {
+                })
+                    .catch(function () {
                     reject({
                         code: 3,
                         message: {
                             title: 'Error',
                             subtitle: 'User rejected the request',
-                            message: 'User rejected the connect'
-                        }
+                            message: 'User rejected the connect',
+                        },
                     });
                 });
-            })["catch"](function (err) {
+            })
+                .catch(function (err) {
                 error.code = 4;
                 error.message = err.message;
                 reject(error);

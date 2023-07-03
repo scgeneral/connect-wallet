@@ -7,6 +7,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -27,7 +29,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -51,17 +53,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.WalletsConnect = void 0;
 var rxjs_1 = require("rxjs");
-var web3_provider_1 = __importDefault(require("@walletconnect/web3-provider"));
 var helpers_1 = require("../helpers");
 var abstract_connector_1 = require("../abstract-connector");
+var ethereum_provider_1 = __importDefault(require("@walletconnect/ethereum-provider"));
 var WalletsConnect = /** @class */ (function (_super) {
     __extends(WalletsConnect, _super);
     /**
      * Connect wallet to application using connect wallet via WalletConnect by scanning Qr Code
-     * in your favourite cryptowallet.
+     * in your favourite crypto wallet.
      */
     function WalletsConnect() {
         return _super.call(this) || this;
@@ -77,14 +79,18 @@ var WalletsConnect = /** @class */ (function (_super) {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                        var providerOptions, _a;
                         var _this = this;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
                                 case 0:
-                                    this.connector = new web3_provider_1["default"](provider.provider[provider.useProvider]);
-                                    return [4 /*yield*/, this.connector
-                                            .enable()
-                                            .then(function () {
+                                    providerOptions = provider.provider[provider.useProvider];
+                                    if (!providerOptions) return [3 /*break*/, 3];
+                                    _a = this;
+                                    return [4 /*yield*/, ethereum_provider_1.default.init(providerOptions)];
+                                case 1:
+                                    _a.connector = _b.sent();
+                                    return [4 /*yield*/, this.connector.enable().then(function () {
                                             resolve({
                                                 code: 1,
                                                 connected: true,
@@ -92,23 +98,35 @@ var WalletsConnect = /** @class */ (function (_super) {
                                                 message: {
                                                     title: 'Success',
                                                     subtitle: 'Wallet Connect',
-                                                    text: "Wallet Connect connected."
-                                                }
+                                                    text: "Wallet Connect connected.",
+                                                },
                                             });
-                                        })["catch"](function () {
+                                        }).catch(function () {
                                             reject({
                                                 code: 5,
                                                 connected: false,
                                                 message: {
                                                     title: 'Error',
                                                     subtitle: 'Error connect',
-                                                    text: "User closed qr modal window."
-                                                }
+                                                    text: "User closed qr modal window.",
+                                                },
                                             });
                                         })];
-                                case 1:
-                                    _a.sent();
-                                    return [2 /*return*/];
+                                case 2:
+                                    _b.sent();
+                                    return [3 /*break*/, 4];
+                                case 3:
+                                    reject({
+                                        code: 6,
+                                        connected: false,
+                                        message: {
+                                            title: 'Error',
+                                            subtitle: 'Error connect',
+                                            text: 'Project Id is required',
+                                        },
+                                    });
+                                    _b.label = 4;
+                                case 4: return [2 /*return*/];
                             }
                         });
                     }); })];
@@ -118,59 +136,35 @@ var WalletsConnect = /** @class */ (function (_super) {
     WalletsConnect.prototype.eventSubscriber = function () {
         var _this = this;
         return new rxjs_1.Observable(function (observer) {
-            _this.connector.on('connect', function (error, payload) {
-                if (error) {
-                    observer.error({
-                        code: 3,
-                        message: {
-                            title: 'Error',
-                            subtitle: 'Authorized error',
-                            message: 'You are not authorized.'
-                        }
-                    });
-                }
-                var _a = payload.params[0], accounts = _a.accounts, chainId = _a.chainId;
-                observer.next({ address: accounts, network: chainId, name: 'connect' });
+            _this.connector.on('connect', function (result) {
+                var address = _this.connector.accounts[0];
+                var network = {
+                    chainId: parseInt(result.chainId),
+                };
+                observer.next({ address: address, network: network, name: 'connect' });
             });
-            _this.connector.on('disconnect', function (error, payload) {
+            _this.connector.on('disconnect', function (error) {
                 if (error) {
-                    console.log('wallet connect on connect error', error, payload);
                     observer.error({
                         code: 6,
                         message: {
                             title: 'Error',
                             subtitle: 'Disconnect',
-                            message: 'Wallet disconnected'
-                        }
+                            message: 'Wallet disconnected',
+                        },
                     });
                 }
             });
-            _this.connector.on('accountsChanged', function (accounts, payload) {
-                console.log('WalletConnect account changed', accounts, payload);
+            _this.connector.on('accountsChanged', function (accounts) {
                 observer.next({
                     address: accounts[0],
                     network: helpers_1.parameters.chainsMap[helpers_1.parameters.chainIDMap[_this.connector.chainId]],
-                    name: 'accountsChanged'
+                    name: 'accountsChanged',
                 });
             });
             _this.connector.on('chainChanged', function (chainId) {
                 console.log('WalletConnect chain changed:', chainId);
             });
-            // this.connector.on('wc_sessionUpdate', (error, payload) => {
-            //   console.log(error || payload, 'wc_sessionUpdate');
-            // });
-            // this.connector.on('wc_sessionRequest', (error, payload) => {
-            //   console.log(error || payload, 'wc_sessionRequest');
-            // });
-            // this.connector.on('call_request', (error, payload) => {
-            //   console.log(error || payload, 'call_request');
-            // });
-            // this.connector.on('session_update', (error, payload) => {
-            //   console.log(error || payload, 'session_update');
-            // });
-            // this.connector.on('session_request', (error, payload) => {
-            //   console.log(error || payload, 'session_request');
-            // });
         });
     };
     /**
@@ -182,12 +176,9 @@ var WalletsConnect = /** @class */ (function (_super) {
     WalletsConnect.prototype.getAccounts = function () {
         var _this = this;
         return new Promise(function (resolve) {
-            if (!_this.connector.connected) {
-                _this.connector.createSessithis.connector.on();
-            }
             resolve({
                 address: _this.connector.accounts[0],
-                network: helpers_1.parameters.chainsMap[helpers_1.parameters.chainIDMap[_this.connector.chainId]]
+                network: helpers_1.parameters.chainsMap[helpers_1.parameters.chainIDMap[_this.connector.chainId]],
             });
         });
     };
