@@ -1,5 +1,11 @@
 import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
+import { MetamaskConnect } from 'metamask';
+import { WalletsConnect } from 'wallet-connect';
+import { CoinbaseWalletConnect } from 'coinbase-wallet';
+import { KardiaChainConnect } from 'kardiachain';
+import { OntoConnect } from 'onto';
+import { GameStopConnect } from 'gamestop';
 export interface IProvider {
     name: string;
     useProvider?: string;
@@ -110,6 +116,7 @@ export interface IChain {
     chainID: number;
     hex: string;
 }
+export type IProviderConnect = MetamaskConnect | WalletsConnect | CoinbaseWalletConnect | KardiaChainConnect | OntoConnect | GameStopConnect;
 declare global {
     interface Window {
         onto: any;

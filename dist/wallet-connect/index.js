@@ -59,6 +59,7 @@ var rxjs_1 = require("rxjs");
 var helpers_1 = require("../helpers");
 var abstract_connector_1 = require("../abstract-connector");
 var ethereum_provider_1 = __importDefault(require("@walletconnect/ethereum-provider"));
+var subject = new rxjs_1.Subject();
 var WalletsConnect = /** @class */ (function (_super) {
     __extends(WalletsConnect, _super);
     /**
@@ -78,6 +79,7 @@ var WalletsConnect = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
+                // eslint-disable-next-line no-async-promise-executor
                 return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
                         var providerOptions, _a;
                         var _this = this;
@@ -85,37 +87,42 @@ var WalletsConnect = /** @class */ (function (_super) {
                             switch (_b.label) {
                                 case 0:
                                     providerOptions = provider.provider[provider.useProvider];
-                                    if (!providerOptions) return [3 /*break*/, 3];
+                                    if (!providerOptions) return [3 /*break*/, 4];
+                                    if (!!this.connector) return [3 /*break*/, 2];
                                     _a = this;
                                     return [4 /*yield*/, ethereum_provider_1.default.init(providerOptions)];
                                 case 1:
                                     _a.connector = _b.sent();
-                                    return [4 /*yield*/, this.connector.enable().then(function () {
-                                            resolve({
-                                                code: 1,
-                                                connected: true,
-                                                provider: _this.connector,
-                                                message: {
-                                                    title: 'Success',
-                                                    subtitle: 'Wallet Connect',
-                                                    text: "Wallet Connect connected.",
-                                                },
-                                            });
-                                        }).catch(function () {
-                                            reject({
-                                                code: 5,
-                                                connected: false,
-                                                message: {
-                                                    title: 'Error',
-                                                    subtitle: 'Error connect',
-                                                    text: "User closed qr modal window.",
-                                                },
-                                            });
-                                        })];
-                                case 2:
-                                    _b.sent();
-                                    return [3 /*break*/, 4];
+                                    _b.label = 2;
+                                case 2: return [4 /*yield*/, this.connector
+                                        .enable()
+                                        .then(function () {
+                                        resolve({
+                                            code: 1,
+                                            connected: true,
+                                            provider: _this.connector,
+                                            message: {
+                                                title: 'Success',
+                                                subtitle: 'Wallet Connect',
+                                                text: "Wallet Connect connected.",
+                                            },
+                                        });
+                                    })
+                                        .catch(function () {
+                                        reject({
+                                            code: 5,
+                                            connected: false,
+                                            message: {
+                                                title: 'Error',
+                                                subtitle: 'Error connect',
+                                                text: "User closed qr modal window.",
+                                            },
+                                        });
+                                    })];
                                 case 3:
+                                    _b.sent();
+                                    return [3 /*break*/, 5];
+                                case 4:
                                     reject({
                                         code: 6,
                                         connected: false,
@@ -125,47 +132,54 @@ var WalletsConnect = /** @class */ (function (_super) {
                                             text: 'Project Id is required',
                                         },
                                     });
-                                    _b.label = 4;
-                                case 4: return [2 /*return*/];
+                                    _b.label = 5;
+                                case 5: return [2 /*return*/];
                             }
                         });
                     }); })];
             });
         });
     };
-    WalletsConnect.prototype.eventSubscriber = function () {
-        var _this = this;
-        return new rxjs_1.Observable(function (observer) {
-            _this.connector.on('connect', function (result) {
-                var address = _this.connector.accounts[0];
-                var network = {
-                    chainId: parseInt(result.chainId),
-                };
-                observer.next({ address: address, network: network, name: 'connect' });
+    WalletsConnect.prototype.onConnect = function (result) {
+        var address = this.connector.accounts[0];
+        var network = {
+            chainId: parseInt(result.chainId),
+        };
+        subject.next({ address: address, network: network, name: 'connect' });
+    };
+    WalletsConnect.prototype.onDisconnect = function (error) {
+        this.connector = undefined;
+        if (error) {
+            subject.error({
+                code: 6,
+                message: {
+                    title: 'Error',
+                    subtitle: 'Disconnect',
+                    message: 'Wallet disconnected',
+                },
             });
-            _this.connector.on('disconnect', function (error) {
-                if (error) {
-                    observer.error({
-                        code: 6,
-                        message: {
-                            title: 'Error',
-                            subtitle: 'Disconnect',
-                            message: 'Wallet disconnected',
-                        },
-                    });
-                }
-            });
-            _this.connector.on('accountsChanged', function (accounts) {
-                observer.next({
-                    address: accounts[0],
-                    network: helpers_1.parameters.chainsMap[helpers_1.parameters.chainIDMap[_this.connector.chainId]],
-                    name: 'accountsChanged',
-                });
-            });
-            _this.connector.on('chainChanged', function (chainId) {
-                console.log('WalletConnect chain changed:', chainId);
-            });
+        }
+    };
+    WalletsConnect.prototype.accountsChanged = function (accounts) {
+        subject.next({
+            address: accounts[0],
+            network: helpers_1.parameters.chainsMap[helpers_1.parameters.chainIDMap[this.connector.chainId]],
+            name: 'accountsChanged',
         });
+    };
+    WalletsConnect.prototype.eventSubscriber = function () {
+        this.connector.on('connect', this.onConnect);
+        this.connector.on('disconnect', this.onDisconnect);
+        this.connector.on('accountsChanged', this.accountsChanged);
+        return subject;
+    };
+    WalletsConnect.prototype.eventUnsubscribe = function () {
+        this.connector.disconnect();
+        if (this.connector) {
+            this.connector.off('connect', this.onConnect);
+            this.connector.off('disconnect', this.onDisconnect);
+            this.connector.off('accountsChanged', this.accountsChanged);
+        }
     };
     /**
      * Get account address and chain information from connected wallet.

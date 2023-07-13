@@ -45,7 +45,7 @@ var GameStopConnect = /** @class */ (function () {
      * using connect wallet.
      */
     function GameStopConnect(network) {
-        this.name = "GameStop";
+        this.name = 'GameStop';
         this.chainID = network.chainID;
         if (network.chainName)
             this.chainName = network.chainName;
@@ -67,15 +67,15 @@ var GameStopConnect = /** @class */ (function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var gamestop = window.gamestop;
-            if (typeof gamestop !== "undefined") {
+            if (typeof gamestop !== 'undefined') {
                 _this.connector = gamestop;
                 resolve({
                     code: 1,
                     connected: true,
                     provider: _this.connector,
                     message: {
-                        title: "Success",
-                        subtitle: "Connect success",
+                        title: 'Success',
+                        subtitle: 'Connect success',
                         text: "Gamestop found and connected.",
                     },
                 });
@@ -84,18 +84,18 @@ var GameStopConnect = /** @class */ (function () {
                 code: 2,
                 connected: false,
                 message: {
-                    title: "Error",
-                    subtitle: "Error connect",
+                    title: 'Error',
+                    subtitle: 'Error connect',
                     text: "Onto not found, please install it from <a href='https://onto.app/' target=\"_blank\">onto.app</a>.",
                 },
             });
         });
     };
     GameStopConnect.prototype.ethRequestAccounts = function () {
-        return this.connector.request({ method: "eth_requestAccounts" });
+        return this.connector.request({ method: 'eth_requestAccounts' });
     };
     GameStopConnect.prototype.getChainId = function () {
-        return this.connector.request({ method: "eth_chainId" });
+        return this.connector.request({ method: 'eth_chainId' });
     };
     GameStopConnect.prototype.checkNet = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -112,7 +112,7 @@ var GameStopConnect = /** @class */ (function () {
                     case 2:
                         _a.trys.push([2, 4, , 9]);
                         return [4 /*yield*/, this.connector.request({
-                                method: "wallet_switchEthereumChain",
+                                method: 'wallet_switchEthereumChain',
                                 params: [{ chainId: "0x".concat(this.chainID.toString(16)) }],
                             })];
                     case 3:
@@ -121,14 +121,17 @@ var GameStopConnect = /** @class */ (function () {
                     case 4:
                         err_1 = _a.sent();
                         if (!(err_1.code === 4902)) return [3 /*break*/, 8];
-                        if (!this.chainName || !this.nativeCurrency || !this.rpc || !this.blockExplorerUrl) {
+                        if (!this.chainName ||
+                            !this.nativeCurrency ||
+                            !this.rpc ||
+                            !this.blockExplorerUrl) {
                             return [2 /*return*/, true];
                         }
                         _a.label = 5;
                     case 5:
                         _a.trys.push([5, 7, , 8]);
                         return [4 /*yield*/, this.connector.request({
-                                method: "wallet_addEthereumChain",
+                                method: 'wallet_addEthereumChain',
                                 params: [
                                     {
                                         chainId: "0x".concat(this.chainID.toString(16)),
@@ -144,7 +147,7 @@ var GameStopConnect = /** @class */ (function () {
                         return [2 /*return*/, true];
                     case 7:
                         err_2 = _a.sent();
-                        throw new Error("user reject add chain");
+                        throw new Error('user reject add chain');
                     case 8: throw new Error("user reject switch network");
                     case 9: return [2 /*return*/, true];
                     case 10:
@@ -158,7 +161,7 @@ var GameStopConnect = /** @class */ (function () {
     GameStopConnect.prototype.eventSubscriber = function () {
         var _this = this;
         return new rxjs_1.Observable(function (observer) {
-            _this.connector.on("chainChanged", function (chainId) { return __awaiter(_this, void 0, void 0, function () {
+            _this.connector.on('chainChanged', function (chainId) { return __awaiter(_this, void 0, void 0, function () {
                 var accounts;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -170,8 +173,8 @@ var GameStopConnect = /** @class */ (function () {
                                     code: 4,
                                     address: accounts[0],
                                     message: {
-                                        title: "Error",
-                                        subtitle: "chainChanged error",
+                                        title: 'Error',
+                                        subtitle: 'chainChanged error',
                                         message: helpers_1.codeMap[4].name,
                                     },
                                 });
@@ -179,26 +182,26 @@ var GameStopConnect = /** @class */ (function () {
                             observer.next({
                                 address: accounts[0],
                                 network: helpers_1.parameters.chainsMap[chainId],
-                                name: "chainChanged",
+                                name: 'chainChanged',
                             });
                             return [2 /*return*/];
                     }
                 });
             }); });
-            _this.connector.on("accountsChanged", function (address) {
+            _this.connector.on('accountsChanged', function (address) {
                 if (address.length) {
                     observer.next({
                         address: address[0],
                         network: helpers_1.parameters.chainsMap[helpers_1.parameters.chainIDMap[+_this.chainID]],
-                        name: "accountsChanged",
+                        name: 'accountsChanged',
                     });
                 }
                 else {
                     observer.error({
                         code: 3,
                         message: {
-                            title: "Error",
-                            subtitle: "Authorized error",
+                            title: 'Error',
+                            subtitle: 'Authorized error',
                             message: helpers_1.codeMap[3].name,
                         },
                     });
@@ -206,6 +209,7 @@ var GameStopConnect = /** @class */ (function () {
             });
         });
     };
+    GameStopConnect.prototype.eventUnsubscribe = function () { };
     /**
      * Get account address and chain information from metamask extension.
      *
@@ -217,9 +221,9 @@ var GameStopConnect = /** @class */ (function () {
         var error = {
             code: 3,
             message: {
-                title: "Error",
-                subtitle: "Authorized error",
-                message: "You are not authorized.",
+                title: 'Error',
+                subtitle: 'Authorized error',
+                message: 'You are not authorized.',
             },
         };
         return new Promise(function (resolve, reject) {
@@ -227,11 +231,11 @@ var GameStopConnect = /** @class */ (function () {
                 reject({
                     code: 4,
                     message: {
-                        title: "Error",
-                        subtitle: "Provider error",
-                        message: "No extension",
+                        title: 'Error',
+                        subtitle: 'Provider error',
+                        message: 'No extension',
                     },
-                    type: "GameStop",
+                    type: 'GameStop',
                 });
             }
             _this.checkNet()
@@ -241,7 +245,7 @@ var GameStopConnect = /** @class */ (function () {
                     if (accounts[0]) {
                         _this.connector
                             .request({
-                            method: "eth_chainId",
+                            method: 'eth_chainId',
                         })
                             .then(function (chainID) {
                             resolve({
@@ -258,9 +262,9 @@ var GameStopConnect = /** @class */ (function () {
                     reject({
                         code: 3,
                         message: {
-                            title: "Error",
-                            subtitle: "User rejected the request",
-                            message: "User rejected the connect",
+                            title: 'Error',
+                            subtitle: 'User rejected the request',
+                            message: 'User rejected the connect',
                         },
                     });
                 });

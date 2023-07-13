@@ -62,7 +62,7 @@ var abstract_connector_1 = require("../abstract-connector");
 var CoinbaseWalletConnect = /** @class */ (function (_super) {
     __extends(CoinbaseWalletConnect, _super);
     /**
-     * CoinbaseWalletConnect class to connect browser Coinbase Wallet extention to your application
+     * CoinbaseWalletConnect class to connect browser Coinbase Wallet extension to your application
      * using connect wallet.
      */
     function CoinbaseWalletConnect(network) {
@@ -142,6 +142,7 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
             });
         });
     };
+    CoinbaseWalletConnect.prototype.eventUnsubscribe = function () { };
     CoinbaseWalletConnect.prototype.getChainId = function () {
         return this.connector.request({ method: 'eth_chainId' });
     };
@@ -169,7 +170,10 @@ var CoinbaseWalletConnect = /** @class */ (function (_super) {
                     case 4:
                         err_1 = _a.sent();
                         if (!(err_1.code === 4902)) return [3 /*break*/, 8];
-                        if (!this.chainName || !this.nativeCurrency || !this.rpc || !this.blockExplorerUrl) {
+                        if (!this.chainName ||
+                            !this.nativeCurrency ||
+                            !this.rpc ||
+                            !this.blockExplorerUrl) {
                             return [2 /*return*/, true];
                         }
                         _a.label = 5;

@@ -25,6 +25,7 @@ export declare class KardiaChainConnect extends AbstractConnector {
     connect(): Promise<IConnectorMessage>;
     private ethRequestAccounts;
     eventSubscriber(): Observable<IEvent | IEventError>;
+    eventUnsubscribe(): void;
     /**
      * Get account address and chain information from KardiaChain Wallet extention.
      *

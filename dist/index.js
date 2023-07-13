@@ -101,14 +101,17 @@ var ConnectWallet = /** @class */ (function () {
         };
         /**
          * Logout function. Use this function if you want to do logout from your application. Function will reset
-         * current connection to defoult then you need to initialize connect() function again to connect to your
+         * current connection to default then you need to initialize connect() function again to connect to your
          * provider.
          *
-         * @example connectWallet.resetConect();
+         * @example connectWallet.resetConnect();
          */
-        this.resetConect = function () { return (_this.connector = undefined); };
+        this.resetConnect = function () {
+            _this.connector.eventUnsubscribe();
+            _this.connector = undefined;
+        };
         /**
-         * Use this method to sign custom mesaage.
+         * Use this method to sign custom message.
          *
          * @example connectWallet.signMsg('0x0000000000000000000', 'some_data').then(data => console.log('sign:', data),err => console.log('sign err:',err));
          */
@@ -164,7 +167,7 @@ var ConnectWallet = /** @class */ (function () {
     /**
      * Find and choose available provider for create connection.
      *
-     * @param {Srtring} name provider name passing from connect function in provider value.
+     * @param {String} name provider name passing from connect function in provider value.
      * @returns return selected provider class.
      * @example connectWallet.chooseProvider('MetaMask'); //=> new MetamaskConnect()
      */

@@ -1,6 +1,6 @@
-import { AbstractConnector } from "abstract-connector";
-import { IConnectorMessage, IEvent, IEventError, INetwork } from "interface";
-import { Observable } from "rxjs";
+import { AbstractConnector } from 'abstract-connector';
+import { IConnectorMessage, IEvent, IEventError, INetwork } from 'interface';
+import { Observable } from 'rxjs';
 export declare class GameStopConnect implements AbstractConnector {
     connector: any;
     name: string;
@@ -26,6 +26,7 @@ export declare class GameStopConnect implements AbstractConnector {
     private getChainId;
     private checkNet;
     eventSubscriber(): Observable<IEvent | IEventError>;
+    eventUnsubscribe(): void;
     /**
      * Get account address and chain information from metamask extension.
      *

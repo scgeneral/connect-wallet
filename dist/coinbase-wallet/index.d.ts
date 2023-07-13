@@ -9,7 +9,7 @@ export declare class CoinbaseWalletConnect extends AbstractConnector {
     private rpc;
     private blockExplorerUrl;
     /**
-     * CoinbaseWalletConnect class to connect browser Coinbase Wallet extention to your application
+     * CoinbaseWalletConnect class to connect browser Coinbase Wallet extension to your application
      * using connect wallet.
      */
     constructor(network: INetwork);
@@ -23,6 +23,7 @@ export declare class CoinbaseWalletConnect extends AbstractConnector {
     connect(provider: IProvider): Promise<IConnectorMessage>;
     private ethRequestAccounts;
     eventSubscriber(): Observable<IEvent | IEventError>;
+    eventUnsubscribe(): void;
     private getChainId;
     private checkNet;
     /**

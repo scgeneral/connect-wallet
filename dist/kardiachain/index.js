@@ -126,8 +126,7 @@ var KardiaChainConnect = /** @class */ (function (_super) {
             _this.connector.on('accountsChanged', function (address) {
                 if ((_this.currentAddr &&
                     address[0].toUpperCase() !== _this.currentAddr.toUpperCase()) ||
-                    address[0].toUpperCase() !==
-                        _this.connector.selectedAddress.toUpperCase()) {
+                    address[0].toUpperCase() !== _this.connector.selectedAddress.toUpperCase()) {
                     if (address.length) {
                         _this.connector
                             .request({
@@ -157,6 +156,7 @@ var KardiaChainConnect = /** @class */ (function (_super) {
             });
         });
     };
+    KardiaChainConnect.prototype.eventUnsubscribe = function () { };
     /**
      * Get account address and chain information from KardiaChain Wallet extention.
      *

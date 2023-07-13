@@ -25,6 +25,7 @@ export declare class OntoConnect extends AbstractConnector {
     private getChainId;
     private checkNet;
     eventSubscriber(): Observable<IEvent | IEventError>;
+    eventUnsubscribe(): void;
     /**
      * Get account address and chain information from metamask extention.
      *

@@ -85,8 +85,10 @@ var MetamaskConnect = /** @class */ (function (_super) {
         var _this = this;
         var ethereum = window.ethereum;
         return new Promise(function (resolve, reject) {
-            if (Boolean(ethereum && ethereum.isMetaMask)) {
-                _this.connector = ethereum.providers ? ethereum.providers.filter(function (provider) { return provider.isMetaMask; })[0] : window.ethereum;
+            if (ethereum && ethereum.isMetaMask) {
+                _this.connector = ethereum.providers
+                    ? ethereum.providers.filter(function (provider) { return provider.isMetaMask; })[0]
+                    : window.ethereum;
                 resolve({
                     code: 1,
                     connected: true,
@@ -227,6 +229,7 @@ var MetamaskConnect = /** @class */ (function (_super) {
             });
         });
     };
+    MetamaskConnect.prototype.eventUnsubscribe = function () { };
     /**
      * Get account address and chain information from metamask extention.
      *

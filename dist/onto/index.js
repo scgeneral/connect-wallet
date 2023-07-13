@@ -138,7 +138,10 @@ var OntoConnect = /** @class */ (function (_super) {
                     case 4:
                         err_1 = _a.sent();
                         if (!(err_1.code === 4902)) return [3 /*break*/, 8];
-                        if (!this.chainName || !this.nativeCurrency || !this.rpc || !this.blockExplorerUrl) {
+                        if (!this.chainName ||
+                            !this.nativeCurrency ||
+                            !this.rpc ||
+                            !this.blockExplorerUrl) {
                             return [2 /*return*/, true];
                         }
                         _a.label = 5;
@@ -223,6 +226,7 @@ var OntoConnect = /** @class */ (function (_super) {
             });
         });
     };
+    OntoConnect.prototype.eventUnsubscribe = function () { };
     /**
      * Get account address and chain information from metamask extention.
      *

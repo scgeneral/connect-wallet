@@ -2,12 +2,8 @@ import Web3 from 'web3';
 import { Observable } from 'rxjs';
 import { Contract } from 'web3-eth-contract';
 import { provider } from 'web3-core';
-import { MetamaskConnect } from './metamask';
-import { WalletsConnect } from './wallet-connect';
-import { CoinbaseWalletConnect } from './coinbase-wallet';
-import { KardiaChainConnect } from './kardiachain';
-import { OntoConnect } from './onto';
 import { INetwork, IProvider, IAddContract, IConnect, ISettings, IError, IConnectorMessage, ContractWeb3, IChain, INoNameContract, IEvent, IEventError } from './interface';
+import { AbstractConnector } from 'abstract-connector';
 export declare class ConnectWallet {
     private connector;
     private providerName;
@@ -43,7 +39,7 @@ export declare class ConnectWallet {
     /**
      * Find and choose available provider for create connection.
      *
-     * @param {Srtring} name provider name passing from connect function in provider value.
+     * @param {String} name provider name passing from connect function in provider value.
      * @returns return selected provider class.
      * @example connectWallet.chooseProvider('MetaMask'); //=> new MetamaskConnect()
      */
@@ -60,7 +56,7 @@ export declare class ConnectWallet {
      *
      * @example connectWallet.getConnector();
      */
-    getConnector(): MetamaskConnect | OntoConnect | WalletsConnect | CoinbaseWalletConnect | KardiaChainConnect;
+    getConnector(): AbstractConnector;
     /**
      * Geting current providerName
      *
@@ -165,14 +161,14 @@ export declare class ConnectWallet {
     getBalance: (address: string) => Promise<string | number>;
     /**
      * Logout function. Use this function if you want to do logout from your application. Function will reset
-     * current connection to defoult then you need to initialize connect() function again to connect to your
+     * current connection to default then you need to initialize connect() function again to connect to your
      * provider.
      *
-     * @example connectWallet.resetConect();
+     * @example connectWallet.resetConnect();
      */
-    resetConect: () => void;
+    resetConnect: () => void;
     /**
-     * Use this method to sign custom mesaage.
+     * Use this method to sign custom message.
      *
      * @example connectWallet.signMsg('0x0000000000000000000', 'some_data').then(data => console.log('sign:', data),err => console.log('sign err:',err));
      */
