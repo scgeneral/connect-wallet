@@ -1,20 +1,17 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
-import {
-  IConnectorMessage,
-  IProvider,
-  IEvent,
-  IEventError,
-} from '../interface';
+import { IConnectorMessage, IProvider, IEvent, IEventError } from '../interface';
 
 export abstract class AbstractConnector {
-  public abstract connector: any;
+    public abstract connector: any;
 
-  constructor() {}
+    constructor() {}
 
-  public abstract connect(provider?: IProvider): Promise<IConnectorMessage>;
+    public abstract connect(provider?: IProvider): Promise<IConnectorMessage>;
 
-  public abstract eventSubscriber(): Observable<IEvent | IEventError>;
+    public abstract eventSubscriber(): Observable<IEvent | IEventError> | Subject<unknown>;
 
-  public abstract getAccounts(): Promise<any>;
+    public abstract getAccounts(): Promise<any>;
+
+    public abstract eventUnsubscribe(): void;
 }
