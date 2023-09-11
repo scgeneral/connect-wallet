@@ -9,6 +9,7 @@ interface IWindow extends Window {
         isMetaMask: boolean;
         isWalletLink: boolean;
         providers: any;
+        isLoopring?: boolean;
     };
 }
 export class MetamaskConnect extends AbstractConnector {
@@ -43,9 +44,9 @@ export class MetamaskConnect extends AbstractConnector {
     public connect(): Promise<IConnectorMessage> {
         const { ethereum } = window as IWindow;
         return new Promise<any>((resolve, reject) => {
-            if (ethereum && ethereum.isMetaMask) {
+            if (ethereum && (ethereum.isMetaMask || ethereum.isLoopring)) {
                 this.connector = ethereum.providers
-                    ? ethereum.providers.filter((provider: any) => provider.isMetaMask)[0]
+                    ? ethereum.providers.filter((provider: any) => provider.isMetaMask || provider.isLoopring)[0]
                     : window.ethereum;
 
                 resolve({

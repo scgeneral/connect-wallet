@@ -85,9 +85,9 @@ var MetamaskConnect = /** @class */ (function (_super) {
         var _this = this;
         var ethereum = window.ethereum;
         return new Promise(function (resolve, reject) {
-            if (ethereum && ethereum.isMetaMask) {
+            if (ethereum && (ethereum.isMetaMask || ethereum.isLoopring)) {
                 _this.connector = ethereum.providers
-                    ? ethereum.providers.filter(function (provider) { return provider.isMetaMask; })[0]
+                    ? ethereum.providers.filter(function (provider) { return provider.isMetaMask || provider.isLoopring; })[0]
                     : window.ethereum;
                 resolve({
                     code: 1,
