@@ -1,6 +1,6 @@
 {
   "name": "connect-wallet",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Connect Crypto Wallet by using WalletLink, KardiaChain, MetaMask browser extentions or mobile application and WalletConnect service by scanning Wallet Qr-code.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,7 +31,7 @@
     "@walletconnect/modal": "^2.5.9",
     "rxjs": "^7.5.5",
     "tslib": "^2.6.0",
-    "web3": "1.7.4"
+    "web3": "1.10.1"
   },
   "devDependencies": {
     "tslint": "~6.1.3",
