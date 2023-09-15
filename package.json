@@ -1,6 +1,6 @@
 {
   "name": "connect-wallet",
-  "version": "2.2.4",
+  "version": "2.2.6",
   "description": "Connect Crypto Wallet by using WalletLink, KardiaChain, MetaMask browser extentions or mobile application and WalletConnect service by scanning Wallet Qr-code.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -27,8 +27,8 @@
   "homepage": "https://github.com/laumiqv/connect-wallet#readme",
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.4.2",
-    "@walletconnect/ethereum-provider": "^2.8.6",
-    "@walletconnect/modal": "^2.5.9",
+    "@walletconnect/ethereum-provider": "2.9.2",
+    "@walletconnect/modal": "2.6.1",
     "rxjs": "^7.5.5",
     "tslib": "^2.6.0",
     "web3": "1.10.1"
